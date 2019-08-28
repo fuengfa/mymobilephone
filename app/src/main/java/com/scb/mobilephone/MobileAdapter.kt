@@ -1,6 +1,7 @@
 package com.scb.mobilephone
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -33,6 +34,7 @@ class MobileAdapter(private val listener: OnMobileClickListener)
 
 }
 
+
 class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
         .inflate(R.layout.mobilephone,
@@ -53,16 +55,18 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             .into(mobilePic)
         mobileName.text = mobile.name
         mobileDescription.text = mobile.description
-        mobilePrice.text = "Price: ${mobile.price}"
-        mobileRating.text = "Rating: ${mobile.rating}"
-        itemView.setOnClickListener { listener.onMobileClick(mobile,itemView.id) }
+        mobilePrice.text = "Price: ${mobile.price.toString()}"
+        mobileRating.text = "Rating: ${mobile.rating.toString()}"
+        itemView.setOnClickListener { listener.onMobileClick(mobile,itemView) }
+        mobileHaert.setOnClickListener { listener.onClickHeartClick(mobileHaert,mobile) }
 
     }
 
 }
 
 interface OnMobileClickListener {
-    fun onMobileClick(mobile: MobileModel, itemid: Int)
+    fun onMobileClick(mobile: MobileModel, view: View)
+    fun onClickHeartClick(favImage: ImageView, mobile : MobileModel)
 
 }
 

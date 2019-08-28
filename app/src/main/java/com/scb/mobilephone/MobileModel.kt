@@ -11,7 +11,9 @@ data class MobileModel(
     @SerializedName("name")val name: String,
     @SerializedName("price")val price: Double,
     @SerializedName("rating")val rating: Double,
-    @SerializedName("thumbImageURL")val thumbImageURL: String
+    @SerializedName("thumbImageURL")val thumbImageURL: String,
+    @SerializedName("fav")var fav: Int = 0
+
 ) : Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
@@ -20,7 +22,8 @@ data class MobileModel(
         parcel.readString().toString(),
         parcel.readDouble(),
         parcel.readDouble(),
-        parcel.readString().toString()
+        parcel.readString().toString(),
+        parcel.readInt()
     ) {
     }
 
@@ -32,6 +35,7 @@ data class MobileModel(
         parcel.writeDouble(price)
         parcel.writeDouble(rating)
         parcel.writeString(thumbImageURL)
+        parcel.writeInt(fav)
     }
 
     override fun describeContents(): Int {

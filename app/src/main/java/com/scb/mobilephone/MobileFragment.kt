@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,14 +16,32 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MobileFragment : Fragment(), OnMobileClickListener {
-    override fun onMobileClick(mobile: MobileModel, itemid: Int) {
-        var intent = Intent(context, MobileActivity::class.java)
-        intent.putExtra("mobile", mobile)
-        context!!.startActivity(intent)
+    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
+        if(mobile.fav == 0){
+            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
+            mobile.fav = 1
+        }else{
+            favImage.setImageResource(R.drawable.ic_favorite)
+            mobile.fav = 0
+        }
+
     }
 
-    private lateinit var rvSongs: RecyclerView
-    private lateinit var songAdapter: MobileAdapter
+    override fun onMobileClick(mobile: MobileModel, _view: View) {
+
+        when(_view.id){
+            R.id.mobileHeart -> setHeartRed(_view)
+                else -> {
+                    var intent = Intent(context, MobileDetailActivity::class.java)
+                    intent.putExtra("mobile", mobile)
+                    context!!.startActivity(intent)
+                }
+        }
+    }
+
+
+    private lateinit var rvMobile: RecyclerView
+    private lateinit var mobileAdapter: MobileAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mobile, container, false)
@@ -35,24 +55,34 @@ class MobileFragment : Fragment(), OnMobileClickListener {
 
         override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
             context?.showToast("Success")
-            songAdapter.submitList(response.body()!!)
+            mobileAdapter.submitList(response.body()!!)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvSongs = view.findViewById(R.id.recyclerView)
-        songAdapter = MobileAdapter(this)
-        rvSongs.adapter = songAdapter
-        rvSongs.layoutManager = LinearLayoutManager(context)
-        rvSongs.itemAnimator = DefaultItemAnimator()
+        rvMobile = view.findViewById(R.id.recyclerView)
+        mobileAdapter = MobileAdapter(this)
+        rvMobile.adapter = mobileAdapter
+        rvMobile.layoutManager = LinearLayoutManager(context)
+        rvMobile.itemAnimator = DefaultItemAnimator()
 
         loadSongs()
+
     }
 
+
     private fun loadSongs()  {
-        ApiManager.countryService.countries().enqueue(songListCallback)
+        ApiManager.mobileService.mobile().enqueue(songListCallback)
 //        println("hoiiiiiiiii ${ApiManager.artistService.songs().enqueue(songListCallback)}")
     }
 
+    private fun setHeartRed(_view: View) {
+        val heart: ImageView = _view.findViewById(R.id.mobileHeart)
+        heart.setImageDrawable(ContextCompat.getDrawable(_view.context, R.drawable.favorite))
+    }
+
 }
+
+
+
