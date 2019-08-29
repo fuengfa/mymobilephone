@@ -1,5 +1,6 @@
 package com.scb.mobilephone
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,7 +16,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MobileFragment : Fragment(), OnMobileClickListener {
+class MobileFragment : Fragment(), OnMobileClickListener, OnSortClickListener {
+    override fun sortlowtoheight() {
+        var list : List<MobileModel> = sortList.sortedBy { it.price }
+        setMobileAdapter(list)
+    }
+
+    override fun sorthighttolow() {
+        var list : List<MobileModel> = sortList.sortedByDescending { it.price }
+        setMobileAdapter(list)
+    }
+
+    override fun sortrating() {
+        var list : List<MobileModel> = sortList.sortedByDescending { it.rating }
+        setMobileAdapter(list)
+    }
+
     override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
         if(mobile.fav == 0){
             favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
@@ -29,19 +45,19 @@ class MobileFragment : Fragment(), OnMobileClickListener {
 
     override fun onMobileClick(mobile: MobileModel, _view: View) {
 
-        when(_view.id){
-            R.id.mobileHeart -> setHeartRed(_view)
-                else -> {
-                    var intent = Intent(context, MobileDetailActivity::class.java)
-                    intent.putExtra("mobile", mobile)
-                    context!!.startActivity(intent)
-                }
-        }
+        var intent = Intent(context, MobileDetailActivity::class.java)
+        intent.putExtra("mobile", mobile)
+        context!!.startActivity(intent)
     }
 
-
+    companion object {
+        private const val EXTRA_SONG = "mobile"
+        fun startActivity(context: Context, mobile: MobileModel? = null) =
+            context.startActivity(Intent(context, MobileFragment::class.java))
+    }
     private lateinit var rvMobile: RecyclerView
     private lateinit var mobileAdapter: MobileAdapter
+    private lateinit var sortList: List<MobileModel>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mobile, container, false)
@@ -55,8 +71,14 @@ class MobileFragment : Fragment(), OnMobileClickListener {
 
         override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
             context?.showToast("Success")
-            mobileAdapter.submitList(response.body()!!)
+
+            sortList = response.body()!!
+            setMobileAdapter(sortList)
         }
+    }
+
+    private fun setMobileAdapter(list: List<MobileModel>){
+        mobileAdapter.submitList(list)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,12 +91,14 @@ class MobileFragment : Fragment(), OnMobileClickListener {
 
         loadSongs()
 
+
     }
 
 
     private fun loadSongs()  {
         ApiManager.mobileService.mobile().enqueue(songListCallback)
-//        println("hoiiiiiiiii ${ApiManager.artistService.songs().enqueue(songListCallback)}")
+
+
     }
 
     private fun setHeartRed(_view: View) {

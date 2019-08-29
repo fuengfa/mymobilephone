@@ -28,7 +28,6 @@ class MobileAdapter(private val listener: OnMobileClickListener)
 
     fun submitList(list: List<MobileModel>) {
         _mobiles = list
-        println("Listttttttttt ${list.toString()}")
         notifyDataSetChanged()
     }
 
@@ -57,6 +56,7 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         mobileDescription.text = mobile.description
         mobilePrice.text = "Price: ${mobile.price.toString()}"
         mobileRating.text = "Rating: ${mobile.rating.toString()}"
+
         itemView.setOnClickListener { listener.onMobileClick(mobile,itemView) }
         mobileHaert.setOnClickListener { listener.onClickHeartClick(mobileHaert,mobile) }
 

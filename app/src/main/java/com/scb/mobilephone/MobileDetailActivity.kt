@@ -16,7 +16,7 @@ import retrofit2.Response
 
 class MobileDetailActivity : AppCompatActivity() {
     companion object {
-        private const val EXTRA_SONG = "mobile"
+        private const val EXTRA_SONG = "low"
         fun startActivity(context: Context, mobile: MobileModel? = null) =
             context.startActivity(Intent(context, MobileDetailActivity::class.java))
     }
@@ -41,9 +41,6 @@ class MobileDetailActivity : AppCompatActivity() {
         detailDes = findViewById(R.id.detailDes)
         detailprice = findViewById(R.id.detailPrice)
 
-
-        val mobile = intent.getParcelableExtra<MobileModel>(EXTRA_SONG) ?: return
-        showSongInformation(mobile)
     }
 
     private val pictureCallback = object : Callback<List<Pictures>> {
@@ -68,26 +65,17 @@ class MobileDetailActivity : AppCompatActivity() {
             PicassoImageLoaderFactory(),
             imageUrls = newimageUrls
         )
+
         }
     }
-//    private fun addNewList(pic: ArrayList<Pictures>){
-//        for (image in pictures){
-//            newimageUrls.add(image.url)
-//        }
-//        imageSlider.adapter = SliderAdapter(
-//            this,
-//            PicassoImageLoaderFactory(),
-//            imageUrls = newimageUrls
-//        )
-//    }
+
 
     private fun loadPictures(mobile:MobileModel) {
         ApiManager.mobileService.pictures(mobile.id).enqueue(pictureCallback)
-//        addNewList(pictures)
     }
 
     private fun showSongInformation(mobile: MobileModel) {
-         detailName.text = mobile.name
+        detailName.text = mobile.name
         detailDes.text = mobile.description
         detailprice.text = "Price: ${mobile.price}"
         detailRating.text = "Rating: ${mobile.rating}"
