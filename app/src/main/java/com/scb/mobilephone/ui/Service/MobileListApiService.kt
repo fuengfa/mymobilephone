@@ -1,5 +1,7 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.Service
 
+import com.scb.mobilephone.ui.model.MobileModel
+import com.scb.mobilephone.ui.model.Pictures
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

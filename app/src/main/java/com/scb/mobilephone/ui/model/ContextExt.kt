@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.model
 
 import android.content.Context
 import android.widget.Toast

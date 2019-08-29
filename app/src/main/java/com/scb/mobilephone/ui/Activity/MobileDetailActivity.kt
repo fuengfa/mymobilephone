@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.Activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,13 +10,17 @@ import android.widget.TextView
 import com.ouattararomuald.slider.ImageSlider
 import com.ouattararomuald.slider.SliderAdapter
 import com.ouattararomuald.slider.loaders.picasso.PicassoImageLoaderFactory
+import com.scb.mobilephone.ui.Service.ApiManager
+import com.scb.mobilephone.ui.model.Pictures
+import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.MobileModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MobileDetailActivity : AppCompatActivity() {
     companion object {
-        private const val EXTRA_SONG = "low"
+        private const val EXTRA_SONG = "mobile"
         fun startActivity(context: Context, mobile: MobileModel? = null) =
             context.startActivity(Intent(context, MobileDetailActivity::class.java))
     }
@@ -41,6 +45,9 @@ class MobileDetailActivity : AppCompatActivity() {
         detailDes = findViewById(R.id.detailDes)
         detailprice = findViewById(R.id.detailPrice)
 
+
+        val mobile = intent.getParcelableExtra<MobileModel>(EXTRA_SONG) ?: return
+        showSongInformation(mobile)
     }
 
     private val pictureCallback = object : Callback<List<Pictures>> {
@@ -57,21 +64,21 @@ class MobileDetailActivity : AppCompatActivity() {
 
             val newimageUrls: ArrayList<String> = ArrayList<String>()
             for (image in pictures){
-            newimageUrls.add(image.url)
-        }
+                newimageUrls.add(image.url)
+            }
             Log.d("fuengfa","size : ${newimageUrls.size}")
             imageSlider.adapter = SliderAdapter(
-            this@MobileDetailActivity,
-            PicassoImageLoaderFactory(),
-            imageUrls = newimageUrls
-        )
-
+                this@MobileDetailActivity,
+                PicassoImageLoaderFactory(),
+                imageUrls = newimageUrls
+            )
         }
     }
 
 
-    private fun loadPictures(mobile:MobileModel) {
+    private fun loadPictures(mobile: MobileModel) {
         ApiManager.mobileService.pictures(mobile.id).enqueue(pictureCallback)
+//        addNewList(pictures)
     }
 
     private fun showSongInformation(mobile: MobileModel) {

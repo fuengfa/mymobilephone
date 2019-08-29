@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.model
 
 import android.os.Parcel
 import android.os.Parcelable

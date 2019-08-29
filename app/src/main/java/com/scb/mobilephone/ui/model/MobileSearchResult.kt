@@ -1,6 +1,7 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.model
 
 import com.google.gson.annotations.SerializedName
+import com.scb.mobilephone.ui.model.MobileModel
 
 data class MobileSearchResult(
         @SerializedName("resultCount") val resultCount: Int,

@@ -1,21 +1,25 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.Activity
 
+import android.content.ContextWrapper
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import com.scb.mobilephone.ui.main.SectionsPagerAdapter
-import android.widget.Toast
 import android.content.DialogInterface
-import android.view.View
-import android.widget.ImageView
-import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.pixplicity.easyprefs.library.Prefs
+import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.adapter.MobileAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), OnClickFavListener {
+
+    override fun clickHeartfromMainActivity() {
+        sectionsPagerAdapter.listener2!!.heart()
+    }
 
     private lateinit var alertDialog1: AlertDialog
     var values = arrayOf<CharSequence>(" Price low to high ", " Price high to low ", " Rating 5-1 ")
@@ -27,7 +31,15 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
+
+        Prefs.Builder()
+            .setContext(this)
+            .setMode(ContextWrapper.MODE_PRIVATE)
+            .setPrefsName(packageName)
+            .setUseDefaultSharedPreference(true)
+            .build()
+
+        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, this)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
@@ -46,9 +58,7 @@ class MainActivity : AppCompatActivity(){
 
         builder.setSingleChoiceItems(values, -1, DialogInterface.OnClickListener { dialog, item ->
             when (item) {
-                0 ->  {
-
-                    sectionsPagerAdapter.listener!!.sortlowtoheight()}
+                0 ->  sectionsPagerAdapter.listener!!.sortlowtoheight()
 
                 1 -> sectionsPagerAdapter.listener!!.sorthighttolow()
 
@@ -67,4 +77,9 @@ interface OnSortClickListener{
     fun sortlowtoheight()
     fun sorthighttolow()
     fun sortrating()
+    fun heart()
+}
+
+interface OnClickFavListener{
+    fun clickHeartfromMainActivity()
 }

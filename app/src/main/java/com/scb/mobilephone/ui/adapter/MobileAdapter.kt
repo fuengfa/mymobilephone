@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.scb.mobilephone.ui.model.MobileModel
+import com.scb.mobilephone.R
 
 
 class MobileAdapter(private val listener: OnMobileClickListener)
@@ -16,7 +18,8 @@ class MobileAdapter(private val listener: OnMobileClickListener)
 
     private var _mobiles: List<MobileModel> = listOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MobileViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        MobileViewHolder(parent)
 
     override fun onBindViewHolder(holder: MobileViewHolder, position: Int) {
         holder.bind(_mobiles[position], listener)
@@ -36,7 +39,8 @@ class MobileAdapter(private val listener: OnMobileClickListener)
 
 class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
-        .inflate(R.layout.mobilephone,
+        .inflate(
+            R.layout.mobilephone,
             parent, false)
 ) {
     private val mobilePic: ImageView = itemView.findViewById(R.id.mobilePicture)
@@ -56,7 +60,6 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         mobileDescription.text = mobile.description
         mobilePrice.text = "Price: ${mobile.price.toString()}"
         mobileRating.text = "Rating: ${mobile.rating.toString()}"
-
         itemView.setOnClickListener { listener.onMobileClick(mobile,itemView) }
         mobileHaert.setOnClickListener { listener.onClickHeartClick(mobileHaert,mobile) }
 

@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.model
 
 data class Pictures(
     val id: Int,

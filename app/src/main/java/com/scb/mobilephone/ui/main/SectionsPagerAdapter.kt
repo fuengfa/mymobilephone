@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.scb.mobilephone.MobileFragment
-import com.scb.mobilephone.OnSortClickListener
-import com.scb.mobilephone.R
+import com.scb.mobilephone.*
+import com.scb.mobilephone.ui.Activity.OnClickFavListener
+import com.scb.mobilephone.ui.Activity.OnSortClickListener
+import com.scb.mobilephone.ui.fragment.FavoriteFragment
+import com.scb.mobilephone.ui.fragment.MobileFragment
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,
@@ -17,17 +19,26 @@ private val TAB_TITLES = arrayOf(
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class SectionsPagerAdapter(private val context: Context, fm: FragmentManager, private val noti: OnClickFavListener) : FragmentPagerAdapter(fm) {
 
     var listener: OnSortClickListener? = null
+    var listener2: OnSortClickListener? = null
+
+
     override fun getItem(position: Int): Fragment {
         when(position){
             0 ->{
-                var mbfragment = MobileFragment()
+                var mbfragment = MobileFragment(noti)
                 listener = mbfragment
                 return mbfragment
             }
-            else -> return PlaceholderFragment()
+            else ->{
+                var mfragment = FavoriteFragment(noti)
+                listener2 = mfragment
+                return mfragment
+            }
+
+
         }
     }
 
