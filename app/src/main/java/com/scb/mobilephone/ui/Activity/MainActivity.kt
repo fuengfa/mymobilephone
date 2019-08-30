@@ -48,8 +48,9 @@ class MainActivity : AppCompatActivity(), OnClickFavListener {
         sortIt.setOnClickListener {
             CreateAlertDialogWithRadioButtonGroup() ;
         }
-
     }
+
+
 
     private fun CreateAlertDialogWithRadioButtonGroup() {
         val builder = AlertDialog.Builder(this@MainActivity)

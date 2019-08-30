@@ -64,7 +64,11 @@ class MobileDetailActivity : AppCompatActivity() {
 
             val newimageUrls: ArrayList<String> = ArrayList<String>()
             for (image in pictures){
-                newimageUrls.add(image.url)
+                if(image.url.contains("http",true)){
+                    newimageUrls.add(image.url)
+                }else{
+                    newimageUrls.add("https://${image.url}")
+                }
             }
             Log.d("fuengfa","size : ${newimageUrls.size}")
             imageSlider.adapter = SliderAdapter(
@@ -72,6 +76,7 @@ class MobileDetailActivity : AppCompatActivity() {
                 PicassoImageLoaderFactory(),
                 imageUrls = newimageUrls
             )
+            Log.d("Print url", newimageUrls.toString())
         }
     }
 

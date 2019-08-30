@@ -10,9 +10,16 @@ import com.bumptech.glide.Glide
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
 
-
 class MobileAdapter(private val listener: OnMobileClickListener)
-    : RecyclerView.Adapter<MobileViewHolder>() {
+    : RecyclerView.Adapter<MobileViewHolder>() , CustomItemTouchHelperListener{
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onItemDismiss(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     val mobiles: List<MobileModel>
         get() = _mobiles
 
@@ -35,7 +42,6 @@ class MobileAdapter(private val listener: OnMobileClickListener)
     }
 
 }
-
 
 class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
@@ -71,5 +77,11 @@ interface OnMobileClickListener {
     fun onMobileClick(mobile: MobileModel, view: View)
     fun onClickHeartClick(favImage: ImageView, mobile : MobileModel)
 
+}
+
+interface CustomItemTouchHelperListener {
+    fun onItemMove(fromPosition: Int, toPosition: Int) : Boolean
+
+    fun onItemDismiss(position: Int)
 }
 
