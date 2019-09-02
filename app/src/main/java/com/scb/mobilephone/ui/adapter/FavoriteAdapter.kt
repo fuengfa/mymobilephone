@@ -1,15 +1,47 @@
 package com.scb.mobilephone.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.pixplicity.easyprefs.library.Prefs
+import com.scb.mobilephone.CustomItemTouchHelperListener
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 
-class FavoriteAdapter:RecyclerView.Adapter<FavViewHolder>() {
+class FavoriteAdapter(private val listener: OnMobileClickListener)
+    :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener {
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        return false
+    }
+
+    override fun onItemDismiss(position: Int) {
+        var idFavorit = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+        Log.d("fue-listbeforeRemove",idFavorit.toString())
+        idFavorit.remove(idFavorit.elementAt(position))
+        Log.d("fue-listAfterRemove",idFavorit.toString())
+        Prefs.putStringSet(PREFS_KEY_ID,idFavorit )
+        Log.d("fue-listAfterPref",Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>()).toString())
+        var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
+        var i: Int =0
+        for (name in _mobiles) {
+            if ( i == position){
+                i++
+            }else{
+                sortListFavorite.add(name)
+                i++
+            }
+        }
+        i=0
+        Log.d("fue-listAfterremove", sortListFavorite.size.toString())
+
+        submitList(sortListFavorite)
+
+    }
 
     val mobiles: List<MobileModel>
         get() = _mobiles
@@ -49,6 +81,7 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
         mobilePrice = itemView.findViewById(R.id.favPrice) as TextView
         mobileRating = itemView.findViewById(R.id.faveRating) as TextView
 
+
             mobilePic?.let {
                 Glide
                     .with(itemView.context)
@@ -58,7 +91,7 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
             }
             mobileName?.text = mobile.name
             mobilePrice?.text = mobile.price.toString()
-            mobileRating?.text = "Rating: ${mobile.rating.toString()}"
+            mobileRating?.text = "Rating: ${mobile.rating}"
 
 
     }

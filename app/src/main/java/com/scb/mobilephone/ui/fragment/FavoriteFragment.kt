@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pixplicity.easyprefs.library.Prefs
@@ -14,6 +16,7 @@ import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
+import com.scb.mobilephone.ui.adapter.OnMobileClickListener
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 import com.scb.mobilephone.ui.model.showToast
@@ -23,19 +26,11 @@ import retrofit2.Response
 
 
 class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
-    OnSortClickListener {
-    override fun sortlowtoheight() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    OnSortClickListener, OnMobileClickListener {
 
-    override fun sorthighttolow() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sortrating() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+    override fun sortlowtoheight() {}
+    override fun sorthighttolow() {}
+    override fun sortrating() {}
     override fun heart() {
        setMobileAdapter(sortList)
     }
@@ -81,16 +76,28 @@ class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rvMobile = view.findViewById(R.id.recyclerView)
-        moAdapter = FavoriteAdapter()
+        moAdapter = FavoriteAdapter(this)
         rvMobile.adapter = moAdapter
         rvMobile.layoutManager = LinearLayoutManager(context)
         rvMobile.itemAnimator = DefaultItemAnimator()
+
+        val callback = CustomItemTouchHelperCallback(moAdapter)
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(rvMobile)
 
         loadSongs()
     }
 
     private fun loadSongs()  {
         ApiManager.mobileService.mobile().enqueue(songListCallback)
+
+    }
+
+    override fun onMobileClick(mobile: MobileModel, view: View) {
+
+    }
+
+    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
 
     }
 
