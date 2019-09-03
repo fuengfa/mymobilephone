@@ -25,6 +25,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager, pr
     var listener2: OnSortClickListener? = null
 
 
+
     override fun getItem(position: Int): Fragment {
         when(position){
             0 ->{

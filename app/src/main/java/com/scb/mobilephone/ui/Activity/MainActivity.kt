@@ -1,77 +1,79 @@
 package com.scb.mobilephone.ui.Activity
 
+import android.app.AlertDialog
 import android.content.ContextWrapper
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import com.scb.mobilephone.ui.main.SectionsPagerAdapter
-import android.content.DialogInterface
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.R
-import com.scb.mobilephone.ui.adapter.MobileAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-class MainActivity : AppCompatActivity(), OnClickFavListener {
-
-    override fun clickHeartfromMainActivity() {
-        sectionsPagerAdapter.listener2!!.heart()
+class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
+    override fun sortLowToHeight() {
+        sectionsPagerAdapter.listener?.sortlowtoheight()
+        alertDialog1.dismiss()
     }
 
-    private lateinit var alertDialog1: AlertDialog
-    var values = arrayOf<CharSequence>(" Price low to high ", " Price high to low ", " Rating 5-1 ")
+    override fun sortHightToLow() {
+        sectionsPagerAdapter.listener?.sorthighttolow()
+        alertDialog1.dismiss()
+    }
 
-    private lateinit var rvMobile: RecyclerView
-    private lateinit var mobileAdapter: MobileAdapter
+    override fun sortRating() {
+        sectionsPagerAdapter.listener?.sortrating()
+        alertDialog1.dismiss()
+    }
+
+    private val presenter: MainPresenter = MainPresenter(this)
+
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var alertDialog1: AlertDialog
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabs: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        presenter.init()
+        initialValue()
+        createSectionPageAgapter()
+        alertDialog1 = presenter.creatDialog(this)
+        sortIt.setOnClickListener { alertDialog1.show() }
+    }
 
+    fun initialValue(){
+        viewPager = findViewById(R.id.view_pager)
+        tabs = findViewById(R.id.tabs)
+    }
+
+    override fun createPref() {
         Prefs.Builder()
             .setContext(this)
             .setMode(ContextWrapper.MODE_PRIVATE)
             .setPrefsName(packageName)
             .setUseDefaultSharedPreference(true)
             .build()
+    }
 
+    fun createSectionPageAgapter() {
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, this)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
-
-        sortIt.setOnClickListener {
-            CreateAlertDialogWithRadioButtonGroup() ;
-        }
     }
 
-
-
-    private fun CreateAlertDialogWithRadioButtonGroup() {
-        val builder = AlertDialog.Builder(this@MainActivity)
-
-//        builder.setTitle("Select Your Choice")
-
-        builder.setSingleChoiceItems(values, -1, DialogInterface.OnClickListener { dialog, item ->
-            when (item) {
-                0 ->  sectionsPagerAdapter.listener!!.sortlowtoheight()
-
-                1 -> sectionsPagerAdapter.listener!!.sorthighttolow()
-
-                2 -> sectionsPagerAdapter.listener!!.sortrating()
-            }
-            alertDialog1.dismiss()
-        })
-        alertDialog1 = builder.create()
-        alertDialog1.show()
-
-
+    override fun clickHeartfromMainActivity() {
+        sectionsPagerAdapter.listener2!!.heart()
     }
+}
+
+interface MainInterface{
+    fun createPref()
+    fun sortLowToHeight()
+    fun sortHightToLow()
+    fun sortRating()
 }
 
 interface OnSortClickListener{
@@ -84,3 +86,4 @@ interface OnSortClickListener{
 interface OnClickFavListener{
     fun clickHeartfromMainActivity()
 }
+

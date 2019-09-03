@@ -129,19 +129,10 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
 
 
     }
-
-
+    
     private fun loadSongs() {
         ApiManager.mobileService.mobile().enqueue(songListCallback)
 
-
-    }
-
-    private fun setHeartRed(_view: View, mobile: MobileModel) {
-        val heart: ImageView = _view.findViewById(R.id.mobileHeart)
-        heart.setImageDrawable(ContextCompat.getDrawable(_view.context, R.drawable.favorite))
-        var a = setOf(mobile.id.toString())
-        Prefs.putStringSet(PREFS_KEY_ID, a)
 
     }
 

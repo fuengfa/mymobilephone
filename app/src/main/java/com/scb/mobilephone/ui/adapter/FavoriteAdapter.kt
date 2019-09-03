@@ -36,7 +36,7 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
                 i++
             }
         }
-        i=0
+        i = 0
         Log.d("fue-listAfterremove", sortListFavorite.size.toString())
 
         submitList(sortListFavorite)
@@ -92,6 +92,7 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
             mobileName?.text = mobile.name
             mobilePrice?.text = mobile.price.toString()
             mobileRating?.text = "Rating: ${mobile.rating}"
+
 
 
     }
