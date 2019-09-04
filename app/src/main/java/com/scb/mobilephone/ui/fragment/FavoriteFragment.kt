@@ -1,6 +1,7 @@
 package com.scb.mobilephone.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,7 @@ import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
-import com.scb.mobilephone.ui.model.MobileModel
-import com.scb.mobilephone.ui.model.showToast
+import com.scb.mobilephone.ui.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +28,10 @@ class FavoriteFragment() : Fragment(),
     private lateinit var rvMobile: RecyclerView
     private lateinit var moAdapter: FavoriteAdapter
     private lateinit var sortList: List<MobileModel>
+    private var mDatabaseAdapter: AppDatbase? = null
+    private var cmWorkerThread: CMWorkerThread = CMWorkerThread("favorite").also {
+        it.start()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,20 +50,25 @@ class FavoriteFragment() : Fragment(),
         override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
             context?.showToast("Success")
             sortList = response.body()!!
+            var newFavList:ArrayList<MobileModel>
+            for (list in sortList){
+                var task = Runnable {
+                    var favlist = mDatabaseAdapter?.mobileDao()!!.queryMobile(list.id)
+                    Log.d("fav", favlist.toString())
+                    if(favlist != null){
+                        Log.d("fav", "----------------------" + favlist.toString())
+                        newFavList.add(favlist.toString())
+
+                    }
+                }
+                cmWorkerThread.postTask(task)
+            }
             setMobileAdapter(sortList)
+
         }
     }
 
     private fun setMobileAdapter(list: List<MobileModel>){
-
-//        var listFav = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//        var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
-//
-//        for (name in list) {
-//            if (listFav.contains(name.id.toString())){
-//                sortListFavorite.add(name)
-//            }
-//        }
         moAdapter.submitList(list)
     }
 
@@ -74,6 +83,9 @@ class FavoriteFragment() : Fragment(),
         val callback = CustomItemTouchHelperCallback(moAdapter)
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(rvMobile)
+        mDatabaseAdapter = AppDatbase.getInstance(view.context).also {
+            it.openHelper.readableDatabase
+        }
 
         loadSongs()
     }

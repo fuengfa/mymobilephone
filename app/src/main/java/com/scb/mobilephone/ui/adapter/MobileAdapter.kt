@@ -10,14 +10,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.AppDatbase
+import com.scb.mobilephone.ui.model.CMWorkerThread
 
 class MobileAdapter(private val listener: OnMobileClickListener)
     : RecyclerView.Adapter<MobileViewHolder>(){
 
-    val mobiles: List<MobileModel>
+    private val mobiles: List<MobileModel>
         get() = _mobiles
 
     private var _mobiles: List<MobileModel> = listOf()
+
+    private var cmWorkerThread: CMWorkerThread = CMWorkerThread("favorite").also {
+        it.start()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         MobileViewHolder(parent)
@@ -34,6 +40,10 @@ class MobileAdapter(private val listener: OnMobileClickListener)
     fun submitList(list: List<MobileModel>) {
         _mobiles = list
         notifyDataSetChanged()
+    }
+
+    fun favoriteListFromRoom(){
+
     }
 
 }

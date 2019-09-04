@@ -56,7 +56,6 @@ class MobileFragment() : Fragment(),
         mDatabaseAdapter = AppDatbase.getInstance(view.context).also {
             it.openHelper.readableDatabase
         }
-
         loadSongs()
     }
 
@@ -69,6 +68,17 @@ class MobileFragment() : Fragment(),
         override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
             context?.showToast("Success")
             sortList = response.body()!!
+            var favlist: MobileEntity?
+            for (list in sortList){
+                var task = Runnable {
+                     favlist =  mDatabaseAdapter?.mobileDao()!!.queryMobile(list.id)
+                    Log.d("fav", favlist.toString())
+                    if(favlist != null){
+                        list.fav = 1
+                    }
+                }
+                cmWorkerThread.postTask(task)
+            }
             setMobileAdapter(sortList)
         }
     }

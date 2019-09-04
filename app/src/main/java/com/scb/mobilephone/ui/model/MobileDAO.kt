@@ -8,6 +8,9 @@ interface MobileDAO {
     @Query("select * from mobile")
     fun queryMobiles(): MobileEntity
 
+    @Query("select * from mobile where id = :id")
+    fun queryMobile(id: Int): MobileEntity?
+
     @Insert
     fun addMobile(userEntity: MobileEntity)
 
