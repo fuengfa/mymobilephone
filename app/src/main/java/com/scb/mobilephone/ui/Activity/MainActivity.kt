@@ -1,19 +1,17 @@
 package com.scb.mobilephone.ui.Activity
 
 import android.app.AlertDialog
-import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.scb.mobilephone.ui.main.SectionsPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.R
 import com.scb.mobilephone.ui.model.AppDatbase
 import com.scb.mobilephone.ui.model.CMWorkerThread
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
+class MainActivity: AppCompatActivity(), MainInterface {
 
     private lateinit var mCMWorkerThread: CMWorkerThread
 
@@ -77,12 +75,12 @@ class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
 
 
     fun createSectionPageAgapter() {
-        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, this)
+        sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         viewPager.adapter = sectionsPagerAdapter
         tabs.setupWithViewPager(viewPager)
     }
 
-    override fun clickHeartfromMainActivity() {
+    fun clickHeartfromMainActivity() {
         sectionsPagerAdapter.listener2?.heart()
         sectionsPagerAdapter.listener?.heart()
     }

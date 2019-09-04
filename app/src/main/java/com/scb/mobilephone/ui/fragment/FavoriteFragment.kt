@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.*
 import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
@@ -18,14 +17,12 @@ import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
 import com.scb.mobilephone.ui.model.MobileModel
-import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 import com.scb.mobilephone.ui.model.showToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
+class FavoriteFragment() : Fragment(),
     OnSortClickListener, OnMobileClickListener {
 
     private lateinit var rvMobile: RecyclerView
@@ -39,6 +36,46 @@ class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
     ): View? {
         var _view = inflater.inflate(R.layout.fragment_favorite, container, false)
         return _view
+    }
+
+    private val songListCallback = object : Callback<List<MobileModel>> {
+        override fun onFailure(call: Call<List<MobileModel>>, t: Throwable) {
+            context?.showToast("Can not call country list $t")
+        }
+
+        override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
+            context?.showToast("Success")
+            sortList = response.body()!!
+            setMobileAdapter(sortList)
+        }
+    }
+
+    private fun setMobileAdapter(list: List<MobileModel>){
+
+//        var listFav = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+//        var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
+//
+//        for (name in list) {
+//            if (listFav.contains(name.id.toString())){
+//                sortListFavorite.add(name)
+//            }
+//        }
+        moAdapter.submitList(list)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        rvMobile = view.findViewById(R.id.recyclerView)
+        moAdapter = FavoriteAdapter(this)
+        rvMobile.adapter = moAdapter
+        rvMobile.layoutManager = LinearLayoutManager(context)
+        rvMobile.itemAnimator = DefaultItemAnimator()
+
+        val callback = CustomItemTouchHelperCallback(moAdapter)
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(rvMobile)
+
+        loadSongs()
     }
 
     override fun sortlowtoheight() {
@@ -58,45 +95,6 @@ class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
         setMobileAdapter(sortList)
     }
 
-    private val songListCallback = object : Callback<List<MobileModel>> {
-        override fun onFailure(call: Call<List<MobileModel>>, t: Throwable) {
-            println("conttext Showtoast")
-            context?.showToast("Can not call country list $t")
-        }
-
-        override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
-            context?.showToast("Success")
-            sortList = response.body()!!
-            setMobileAdapter(sortList)
-        }
-    }
-
-    private fun setMobileAdapter(list: List<MobileModel>){
-        var listFav = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-        var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
-
-        for (name in list) {
-            if (listFav.contains(name.id.toString())){
-                sortListFavorite.add(name)
-            }
-        }
-        moAdapter.submitList(sortListFavorite)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        rvMobile = view.findViewById(R.id.recyclerView)
-        moAdapter = FavoriteAdapter(this)
-        rvMobile.adapter = moAdapter
-        rvMobile.layoutManager = LinearLayoutManager(context)
-        rvMobile.itemAnimator = DefaultItemAnimator()
-
-        val callback = CustomItemTouchHelperCallback(moAdapter)
-        val itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(rvMobile)
-
-        loadSongs()
-    }
 
     private fun loadSongs()  {
         ApiManager.mobileService.mobile().enqueue(songListCallback)

@@ -3,7 +3,6 @@ package com.scb.mobilephone.ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.*
+import com.scb.mobilephone.ui.Activity.MainActivity
 import com.scb.mobilephone.ui.Activity.MobileDetailActivity
 import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
@@ -21,59 +20,13 @@ import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.MobileAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
 import com.scb.mobilephone.ui.model.MobileModel
-import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 import com.scb.mobilephone.ui.model.showToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
+class MobileFragment() : Fragment(),
     OnMobileClickListener, OnSortClickListener {
-    override fun heart() {
-        setMobileAdapter(sortList)
-    }
-
-    override fun sortlowtoheight() {
-        var list: List<MobileModel> = sortList.sortedBy { it.price }
-        setMobileAdapter(list)
-    }
-
-    override fun sorthighttolow() {
-        var list: List<MobileModel> = sortList.sortedByDescending { it.price }
-        setMobileAdapter(list)
-    }
-
-    override fun sortrating() {
-        var list: List<MobileModel> = sortList.sortedByDescending { it.rating }
-        setMobileAdapter(list)
-    }
-
-    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
-        if (mobile.fav == 0) {
-            favImage.setImageResource(R.drawable.ic_favorite)
-            mobile.fav = 1
-            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-            Log.d("fue", b.toString())
-            b.add(mobile.id.toString())
-            Log.d("fue-", b.toString())
-            Prefs.putStringSet(PREFS_KEY_ID, b)
-            var m = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-            Log.d("fue", m.toString())
-        } else {
-            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
-            mobile.fav = 0
-            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-            b.remove(mobile.id.toString())
-        }
-        noti.clickHeartfromMainActivity()
-    }
-
-    override fun onMobileClick(mobile: MobileModel, _view: View) {
-
-        var intent = Intent(context, MobileDetailActivity::class.java)
-        intent.putExtra("mobile", mobile)
-        context!!.startActivity(intent)
-    }
 
     companion object {
         private const val EXTRA_SONG = "mobile"
@@ -102,6 +55,52 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
             setMobileAdapter(sortList)
         }
     }
+    override fun heart() {
+        setMobileAdapter(sortList)
+    }
+
+    override fun sortlowtoheight() {
+        var list: List<MobileModel> = sortList.sortedBy { it.price }
+        setMobileAdapter(list)
+    }
+
+    override fun sorthighttolow() {
+        var list: List<MobileModel> = sortList.sortedByDescending { it.price }
+        setMobileAdapter(list)
+    }
+
+    override fun sortrating() {
+        var list: List<MobileModel> = sortList.sortedByDescending { it.rating }
+        setMobileAdapter(list)
+    }
+
+    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
+//        if (mobile.fav == 0) {
+//            favImage.setImageResource(R.drawable.ic_favorite)
+//            mobile.fav = 1
+//            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+//            Log.d("fue", b.toString())
+//            b.add(mobile.id.toString())
+//            Log.d("fue-", b.toString())
+//            Prefs.putStringSet(PREFS_KEY_ID, b)
+//            var m = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+//            Log.d("fue", m.toString())
+//        } else {
+//            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
+//            mobile.fav = 0
+//            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+//            b.remove(mobile.id.toString())
+//        }
+        (context as? MainActivity)?.clickHeartfromMainActivity()
+    }
+
+    override fun onMobileClick(mobile: MobileModel, _view: View) {
+
+        var intent = Intent(context, MobileDetailActivity::class.java)
+        intent.putExtra("mobile", mobile)
+        context!!.startActivity(intent)
+    }
+
 
     private fun setMobileAdapter(list: List<MobileModel>) {
         mobileAdapter.submitList(list)
@@ -117,8 +116,8 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
 
         loadSongs()
 
-        var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-        Log.d("fue start", b.toString())
+//        var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
+//        Log.d("fue start", b.toString())
 
 
     }

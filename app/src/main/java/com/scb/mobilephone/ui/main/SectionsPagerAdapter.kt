@@ -15,7 +15,7 @@ private val TAB_TITLES = arrayOf(
     R.string.tab_text_2
 )
 
-class SectionsPagerAdapter(private val context: Context, fm: FragmentManager, private val noti: OnClickFavListener) : FragmentPagerAdapter(fm) {
+class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     var listener: OnSortClickListener? = null
     var listener2: OnSortClickListener? = null
@@ -25,12 +25,12 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager, pr
     override fun getItem(position: Int): Fragment {
         when(position){
             0 ->{
-                var mbfragment = MobileFragment(noti)
+                var mbfragment = MobileFragment()
                 listener = mbfragment
                 return mbfragment
             }
             else ->{
-                var mfragment = FavoriteFragment(noti)
+                var mfragment = FavoriteFragment()
                 listener2 = mfragment
                 return mfragment
             }
