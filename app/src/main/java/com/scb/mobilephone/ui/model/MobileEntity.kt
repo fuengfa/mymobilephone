@@ -6,12 +6,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "mobile")
 data class MobileEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey var id: Int,
     @NonNull var name: String,
-    @NonNull val description: String,
-    @NonNull val brand: String,
-    val price: Double,
-    val rating: Double,
-    val thumbImageURL: String,
+    @NonNull var description: String,
+    @NonNull var brand: String,
+    var price: Double,
+    var rating: Double,
+    var thumbImageURL: String,
     var fav: Int
 )

@@ -11,6 +11,9 @@ interface MobileDAO {
     @Query("select * from mobile where id = :id")
     fun queryMobile(id: Int): MobileEntity?
 
+    @Query("delete from mobile where id = :id")
+    fun deleteMobilebyID(id: Int)
+
     @Insert
     fun addMobile(userEntity: MobileEntity)
 

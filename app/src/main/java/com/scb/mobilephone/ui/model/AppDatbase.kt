@@ -1,7 +1,6 @@
 package com.scb.mobilephone.ui.model
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -31,7 +30,6 @@ abstract class AppDatbase : RoomDatabase() {
                     // onCreate will be called when the database is created for the first time
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        Log.d(TAG, "onCreate")
                     }
                 })
                     .addMigrations()

@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.scb.mobilephone.*
-import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.fragment.FavoriteFragment
 import com.scb.mobilephone.ui.fragment.MobileFragment

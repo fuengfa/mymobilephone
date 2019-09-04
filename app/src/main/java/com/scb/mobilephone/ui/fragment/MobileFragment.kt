@@ -3,7 +3,6 @@ package com.scb.mobilephone.ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MobileFragment() : Fragment(),
+class MobileFragment: Fragment(),
     OnMobileClickListener, OnSortClickListener {
 
     companion object {
@@ -72,7 +71,6 @@ class MobileFragment() : Fragment(),
             for (list in sortList){
                 var task = Runnable {
                      favlist =  mDatabaseAdapter?.mobileDao()!!.queryMobile(list.id)
-                    Log.d("fav", favlist.toString())
                     if(favlist != null){
                         list.fav = 1
                     }
@@ -107,8 +105,10 @@ class MobileFragment() : Fragment(),
                 mobile.price, mobile.rating, mobile.thumbImageURL, mobile.fav))
         }
         cmWorkerThread.postTask(task)
+
         (context as? MainActivity)?.clickHeartfromMainActivity()
         mobileAdapter.submitList(sortList)
+
     }
 
     override fun onMobileClick(mobile: MobileModel, _view: View) {

@@ -1,36 +1,37 @@
 package com.scb.mobilephone.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.CustomItemTouchHelperListener
-import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
-import com.scb.mobilephone.ui.model.AppDatbase
-import com.scb.mobilephone.ui.model.MobileEntity
-import com.scb.mobilephone.ui.model.PREFS_KEY_ID
+import com.scb.mobilephone.ui.model.*
 
 class FavoriteAdapter(private val listener: OnMobileClickListener)
     :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener{
 
+    var tmp : ArrayList<MobileModel> = ArrayList()
     val mobiles: List<MobileModel>
         get() = _mobiles
     private var _mobiles: List<MobileModel> = listOf()
-    var mDatabaseAdapter: AppDatbase? = null
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         return false
     }
 
     override fun onItemDismiss(position: Int) {
-
-        submitList(mobiles)
+        for (list in _mobiles){
+            tmp.add(list)
+        }
+        tmp.removeAt(position)
+        notifyItemRemoved(position)
+//        ********
+        submitList(tmp)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         FavViewHolder(parent)
@@ -43,10 +44,11 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
         return mobiles.size
     }
 
-    fun submitList(list: List<MobileModel>) {
+    fun submitList(list: List<MobileModel>){
         _mobiles = list
         notifyDataSetChanged()
     }
+
 }
 
 class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
@@ -59,8 +61,12 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
     private var mobileName: TextView ?=null
     private var mobilePrice: TextView ?=null
     private var mobileRating: TextView ?=null
+    private var cmWorkerThread: CMWorkerThread = CMWorkerThread("favorite").also {
+        it.start()
+    }
 
     fun bind(mobile: MobileModel) {
+
         mobilePic= itemView.findViewById(R.id.faveImage) as ImageView
         mobileName = itemView.findViewById(R.id.favName) as TextView
         mobilePrice = itemView.findViewById(R.id.favPrice) as TextView
@@ -75,10 +81,6 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
             mobileName?.text = mobile.name
             mobilePrice?.text = mobile.price.toString()
             mobileRating?.text = "Rating: ${mobile.rating}"
-
-
-
-
     }
 
 }

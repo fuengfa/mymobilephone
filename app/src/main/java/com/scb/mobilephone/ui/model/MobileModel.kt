@@ -7,25 +7,25 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MobileModel(
     @SerializedName("brand")
-    val brand: String,
+    var brand: String,
 
     @SerializedName("description")
-    val description: String,
+    var description: String,
 
     @SerializedName("id")
-    val id: Int,
+    var id: Int,
 
     @SerializedName("name")
-    val name: String,
+    var name: String,
 
     @SerializedName("price")
-    val price: Double,
+    var price: Double,
 
     @SerializedName("rating")
-    val rating: Double,
+    var rating: Double,
 
     @SerializedName("thumbImageURL")
-    val thumbImageURL: String,
+    var thumbImageURL: String,
 
     @SerializedName("fav")
     var fav: Int = 0

@@ -34,7 +34,6 @@ class MainActivity: AppCompatActivity(), MainInterface {
         setupWorkerThread()
 
 
-
     }
     private fun setupWorkerThread() {
         mCMWorkerThread = CMWorkerThread("scb_database").also {

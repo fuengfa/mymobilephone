@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scb.mobilephone.*
-import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
@@ -22,7 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FavoriteFragment() : Fragment(),
+class FavoriteFragment: Fragment(),
     OnSortClickListener, OnMobileClickListener {
 
     private lateinit var rvMobile: RecyclerView
@@ -50,21 +49,18 @@ class FavoriteFragment() : Fragment(),
         override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
             context?.showToast("Success")
             sortList = response.body()!!
-            var newFavList:ArrayList<MobileModel>
-            for (list in sortList){
+            var m : ArrayList<MobileModel> = arrayListOf()
+            var favlist: MobileEntity?
+            for (list in sortList) {
                 var task = Runnable {
-                    var favlist = mDatabaseAdapter?.mobileDao()!!.queryMobile(list.id)
-                    Log.d("fav", favlist.toString())
-                    if(favlist != null){
-                        Log.d("fav", "----------------------" + favlist.toString())
-                        newFavList.add(favlist.toString())
-
+                    favlist = mDatabaseAdapter?.mobileDao()?.queryMobile(list.id)
+                    if (favlist != null) {
+                        m.add(list)
                     }
                 }
                 cmWorkerThread.postTask(task)
             }
-            setMobileAdapter(sortList)
-
+            setMobileAdapter(m)
         }
     }
 
@@ -86,7 +82,6 @@ class FavoriteFragment() : Fragment(),
         mDatabaseAdapter = AppDatbase.getInstance(view.context).also {
             it.openHelper.readableDatabase
         }
-
         loadSongs()
     }
 
@@ -118,7 +113,18 @@ class FavoriteFragment() : Fragment(),
     }
 
     override fun onHeartClick(favImage: ImageView, mobile: MobileModel) {
-
+        var m : ArrayList<MobileModel> = arrayListOf()
+        var favlist: MobileEntity?
+        for (list in sortList) {
+            var task2 = Runnable {
+                favlist = mDatabaseAdapter?.mobileDao()?.queryMobile(list.id)
+                if (favlist != null) {
+                    m.add(list)
+                }
+            }
+            cmWorkerThread.postTask(task2)
+        }
+        setMobileAdapter(m)
     }
 
 
