@@ -9,17 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.AppDatbase
+import com.scb.mobilephone.ui.model.MobileEntity
 
 class MobileAdapter(private val listener: OnMobileClickListener)
-    : RecyclerView.Adapter<MobileViewHolder>() , CustomItemTouchHelperListener{
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    : RecyclerView.Adapter<MobileViewHolder>(){
 
-    override fun onItemDismiss(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+        private var mDatabaseAdapter: AppDatbase? = null
     val mobiles: List<MobileModel>
         get() = _mobiles
 
@@ -29,6 +25,7 @@ class MobileAdapter(private val listener: OnMobileClickListener)
         MobileViewHolder(parent)
 
     override fun onBindViewHolder(holder: MobileViewHolder, position: Int) {
+
         holder.bind(_mobiles[position], listener)
     }
 
@@ -66,22 +63,20 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         mobileDescription.text = mobile.description
         mobilePrice.text = "Price: ${mobile.price.toString()}"
         mobileRating.text = "Rating: ${mobile.rating.toString()}"
+        if(mobile.fav == 0 ){
+            mobileHaert.setImageResource(R.drawable.ic_favorite)
+        }else{
+            mobileHaert.setImageResource(R.drawable.ic_favorite_black_24dp)
+        }
         itemView.setOnClickListener { listener.onMobileClick(mobile,itemView) }
         mobileHaert.setOnClickListener { listener.onClickHeartClick(mobileHaert,mobile) }
-
     }
-
 }
 
 interface OnMobileClickListener {
     fun onMobileClick(mobile: MobileModel, view: View)
     fun onClickHeartClick(favImage: ImageView, mobile : MobileModel)
-
 }
 
-interface CustomItemTouchHelperListener {
-    fun onItemMove(fromPosition: Int, toPosition: Int) : Boolean
 
-    fun onItemDismiss(position: Int)
-}
 

@@ -9,26 +9,17 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.AppDatbase
+import com.scb.mobilephone.ui.model.CMWorkerThread
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
-    override fun sortLowToHeight() {
-        sectionsPagerAdapter.listener?.sortlowtoheight()
-        alertDialog1.dismiss()
-    }
 
-    override fun sortHightToLow() {
-        sectionsPagerAdapter.listener?.sorthighttolow()
-        alertDialog1.dismiss()
-    }
+    private lateinit var mCMWorkerThread: CMWorkerThread
 
-    override fun sortRating() {
-        sectionsPagerAdapter.listener?.sortrating()
-        alertDialog1.dismiss()
-    }
 
     private val presenter: MainPresenter = MainPresenter(this)
-
+    private var mDatabaseAdapter: AppDatbase? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     private lateinit var alertDialog1: AlertDialog
     private lateinit var viewPager: ViewPager
@@ -42,6 +33,41 @@ class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
         createSectionPageAgapter()
         alertDialog1 = presenter.creatDialog(this)
         sortIt.setOnClickListener { alertDialog1.show() }
+
+        setupDatabase()
+        setupWorkerThread()
+
+
+
+    }
+    private fun setupWorkerThread() {
+        mCMWorkerThread = CMWorkerThread("scb_database").also {
+            it.start()
+        }
+    }
+
+    private fun setupDatabase() {
+        mDatabaseAdapter = AppDatbase.getInstance(this).also {
+            it.openHelper.readableDatabase
+        }
+    }
+
+    override fun sortLowToHeight() {
+        sectionsPagerAdapter.listener?.sortlowtoheight()
+        sectionsPagerAdapter.listener2?.sortlowtoheight()
+        alertDialog1.dismiss()
+    }
+
+    override fun sortHightToLow() {
+        sectionsPagerAdapter.listener?.sorthighttolow()
+        sectionsPagerAdapter.listener2?.sorthighttolow()
+        alertDialog1.dismiss()
+    }
+
+    override fun sortRating() {
+        sectionsPagerAdapter.listener?.sortrating()
+        sectionsPagerAdapter.listener2?.sortrating()
+        alertDialog1.dismiss()
     }
 
     fun initialValue(){
@@ -49,14 +75,6 @@ class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
         tabs = findViewById(R.id.tabs)
     }
 
-    override fun createPref() {
-        Prefs.Builder()
-            .setContext(this)
-            .setMode(ContextWrapper.MODE_PRIVATE)
-            .setPrefsName(packageName)
-            .setUseDefaultSharedPreference(true)
-            .build()
-    }
 
     fun createSectionPageAgapter() {
         sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, this)
@@ -65,12 +83,12 @@ class MainActivity: AppCompatActivity(), OnClickFavListener, MainInterface {
     }
 
     override fun clickHeartfromMainActivity() {
-        sectionsPagerAdapter.listener2!!.heart()
+        sectionsPagerAdapter.listener2?.heart()
+        sectionsPagerAdapter.listener?.heart()
     }
 }
 
 interface MainInterface{
-    fun createPref()
     fun sortLowToHeight()
     fun sortHightToLow()
     fun sortRating()

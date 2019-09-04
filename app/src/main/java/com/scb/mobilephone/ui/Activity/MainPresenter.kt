@@ -8,7 +8,7 @@ import android.content.DialogInterface
 
 class MainPresenter(private val view: MainInterface) {
     fun init(){
-        view.createPref()
+
     }
 
     fun creatDialog(context: Context): AlertDialog {

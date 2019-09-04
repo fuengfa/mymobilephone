@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,9 +30,8 @@ import retrofit2.Response
 class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
     OnMobileClickListener, OnSortClickListener {
     override fun heart() {
-
+        setMobileAdapter(sortList)
     }
-
 
     override fun sortlowtoheight() {
         var list: List<MobileModel> = sortList.sortedBy { it.price }
@@ -52,7 +50,7 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
 
     override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
         if (mobile.fav == 0) {
-            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
+            favImage.setImageResource(R.drawable.ic_favorite)
             mobile.fav = 1
             var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
             Log.d("fue", b.toString())
@@ -62,17 +60,12 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
             var m = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
             Log.d("fue", m.toString())
         } else {
-            favImage.setImageResource(R.drawable.ic_favorite)
+            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
             mobile.fav = 0
             var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
             b.remove(mobile.id.toString())
         }
-
         noti.clickHeartfromMainActivity()
-    }
-
-    fun mysplit(a: String) {
-
     }
 
     override fun onMobileClick(mobile: MobileModel, _view: View) {
@@ -87,7 +80,7 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
         fun startActivity(context: Context, mobile: MobileModel? = null) =
             context.startActivity(Intent(context, MobileFragment::class.java))
     }
-
+    private lateinit var myMobileList: MobileModel
     private lateinit var rvMobile: RecyclerView
     private lateinit var mobileAdapter: MobileAdapter
     private lateinit var sortList: List<MobileModel>
@@ -129,7 +122,7 @@ class MobileFragment(private val noti: OnClickFavListener) : Fragment(),
 
 
     }
-    
+
     private fun loadSongs() {
         ApiManager.mobileService.mobile().enqueue(songListCallback)
 

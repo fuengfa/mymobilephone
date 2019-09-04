@@ -14,18 +14,18 @@ import com.scb.mobilephone.R
 import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 
 class FavoriteAdapter(private val listener: OnMobileClickListener)
-    :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener {
+    :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener{
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         return false
     }
 
     override fun onItemDismiss(position: Int) {
         var idFavorit = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-        Log.d("fue-listbeforeRemove",idFavorit.toString())
+//        Log.d("fue-listbeforeRemove",idFavorit.toString())
         idFavorit.remove(idFavorit.elementAt(position))
-        Log.d("fue-listAfterRemove",idFavorit.toString())
+//        Log.d("fue-listAfterRemove",idFavorit.toString())
         Prefs.putStringSet(PREFS_KEY_ID,idFavorit )
-        Log.d("fue-listAfterPref",Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>()).toString())
+//        Log.d("fue-listAfterPref",Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>()).toString())
         var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
         var i: Int =0
         for (name in _mobiles) {
@@ -40,12 +40,11 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
         Log.d("fue-listAfterremove", sortListFavorite.size.toString())
 
         submitList(sortListFavorite)
-
     }
+
 
     val mobiles: List<MobileModel>
         get() = _mobiles
-
     private var _mobiles: List<MobileModel> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         FavViewHolder(parent)
@@ -80,8 +79,6 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
         mobileName = itemView.findViewById(R.id.favName) as TextView
         mobilePrice = itemView.findViewById(R.id.favPrice) as TextView
         mobileRating = itemView.findViewById(R.id.faveRating) as TextView
-
-
             mobilePic?.let {
                 Glide
                     .with(itemView.context)
@@ -92,6 +89,7 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
             mobileName?.text = mobile.name
             mobilePrice?.text = mobile.price.toString()
             mobileRating?.text = "Rating: ${mobile.rating}"
+
 
 
 

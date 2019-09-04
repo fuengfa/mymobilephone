@@ -1,55 +1,33 @@
 package com.scb.mobilephone.ui.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class MobileModel(
-    @SerializedName("brand")val brand: String,
-    @SerializedName("description")val description: String,
-    @SerializedName("id")val id: Int,
-    @SerializedName("name")val name: String,
-    @SerializedName("price")val price: Double,
-    @SerializedName("rating")val rating: Double,
-    @SerializedName("thumbImageURL")val thumbImageURL: String,
-    @SerializedName("fav")var fav: Int = 0
+    @SerializedName("brand")
+    val brand: String,
 
-) : Parcelable{
-    constructor(parcel: Parcel) : this(
-        parcel.readString().toString(),
-        parcel.readString().toString(),
-        parcel.readInt(),
-        parcel.readString().toString(),
-        parcel.readDouble(),
-        parcel.readDouble(),
-        parcel.readString().toString(),
-        parcel.readInt()
-    ) {
-    }
+    @SerializedName("description")
+    val description: String,
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(brand)
-        parcel.writeString(description)
-        parcel.writeInt(id)
-        parcel.writeString(name)
-        parcel.writeDouble(price)
-        parcel.writeDouble(rating)
-        parcel.writeString(thumbImageURL)
-        parcel.writeInt(fav)
-    }
+    @SerializedName("id")
+    val id: Int,
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    @SerializedName("name")
+    val name: String,
 
-    companion object CREATOR : Parcelable.Creator<MobileModel> {
-        override fun createFromParcel(parcel: Parcel): MobileModel {
-            return MobileModel(parcel)
-        }
+    @SerializedName("price")
+    val price: Double,
 
-        override fun newArray(size: Int): Array<MobileModel?> {
-            return arrayOfNulls(size)
-        }
-    }
+    @SerializedName("rating")
+    val rating: Double,
 
-}
+    @SerializedName("thumbImageURL")
+    val thumbImageURL: String,
+
+    @SerializedName("fav")
+    var fav: Int = 0
+
+) : Parcelable

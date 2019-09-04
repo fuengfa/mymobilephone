@@ -28,6 +28,19 @@ import retrofit2.Response
 class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
     OnSortClickListener, OnMobileClickListener {
 
+    private lateinit var rvMobile: RecyclerView
+    private lateinit var moAdapter: FavoriteAdapter
+    private lateinit var sortList: List<MobileModel>
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        var _view = inflater.inflate(R.layout.fragment_favorite, container, false)
+        return _view
+    }
+
     override fun sortlowtoheight() {
         var list: List<MobileModel> = sortList.sortedBy { it.price }
         setMobileAdapter(list)
@@ -42,20 +55,7 @@ class FavoriteFragment(private val noti: OnClickFavListener) : Fragment(),
     }
 
     override fun heart() {
-       setMobileAdapter(sortList)
-    }
-
-    private lateinit var rvMobile: RecyclerView
-    private lateinit var moAdapter: FavoriteAdapter
-    private lateinit var sortList: List<MobileModel>
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        var _view = inflater.inflate(R.layout.fragment_favorite, container, false)
-        return _view
+        setMobileAdapter(sortList)
     }
 
     private val songListCallback = object : Callback<List<MobileModel>> {
