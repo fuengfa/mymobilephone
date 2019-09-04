@@ -14,8 +14,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity: AppCompatActivity(), MainInterface {
 
     private lateinit var mCMWorkerThread: CMWorkerThread
-
-
     private val presenter: MainPresenter = MainPresenter(this)
     private var mDatabaseAdapter: AppDatbase? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter

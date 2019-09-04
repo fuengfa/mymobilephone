@@ -105,7 +105,7 @@ class FavoriteFragment() : Fragment(),
 
     }
 
-    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
+    override fun onHeartClick(favImage: ImageView, mobile: MobileModel) {
 
     }
 

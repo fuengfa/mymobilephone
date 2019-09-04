@@ -11,41 +11,27 @@ import com.pixplicity.easyprefs.library.Prefs
 import com.scb.mobilephone.CustomItemTouchHelperListener
 import com.scb.mobilephone.ui.model.MobileModel
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.model.AppDatbase
+import com.scb.mobilephone.ui.model.MobileEntity
 import com.scb.mobilephone.ui.model.PREFS_KEY_ID
 
 class FavoriteAdapter(private val listener: OnMobileClickListener)
     :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener{
+
+    val mobiles: List<MobileModel>
+        get() = _mobiles
+    private var _mobiles: List<MobileModel> = listOf()
+    var mDatabaseAdapter: AppDatbase? = null
+
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         return false
     }
 
     override fun onItemDismiss(position: Int) {
-        var idFavorit = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//        Log.d("fue-listbeforeRemove",idFavorit.toString())
-        idFavorit.remove(idFavorit.elementAt(position))
-//        Log.d("fue-listAfterRemove",idFavorit.toString())
-        Prefs.putStringSet(PREFS_KEY_ID,idFavorit )
-//        Log.d("fue-listAfterPref",Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>()).toString())
-        var sortListFavorite: ArrayList<MobileModel> = arrayListOf()
-        var i: Int =0
-        for (name in _mobiles) {
-            if ( i == position){
-                i++
-            }else{
-                sortListFavorite.add(name)
-                i++
-            }
-        }
-        i = 0
-        Log.d("fue-listAfterremove", sortListFavorite.size.toString())
 
-        submitList(sortListFavorite)
+        submitList(mobiles)
     }
 
-
-    val mobiles: List<MobileModel>
-        get() = _mobiles
-    private var _mobiles: List<MobileModel> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         FavViewHolder(parent)
 

@@ -13,5 +13,5 @@ data class MobileEntity(
     val price: Double,
     val rating: Double,
     val thumbImageURL: String,
-    var fav: Boolean
+    var fav: Int
 )

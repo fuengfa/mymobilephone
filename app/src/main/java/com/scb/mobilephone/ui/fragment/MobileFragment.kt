@@ -3,6 +3,7 @@ package com.scb.mobilephone.ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.scb.mobilephone.*
 import com.scb.mobilephone.ui.Activity.MainActivity
 import com.scb.mobilephone.ui.Activity.MobileDetailActivity
-import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.MobileAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
-import com.scb.mobilephone.ui.model.MobileModel
-import com.scb.mobilephone.ui.model.showToast
+import com.scb.mobilephone.ui.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,10 +36,28 @@ class MobileFragment() : Fragment(),
     private lateinit var rvMobile: RecyclerView
     private lateinit var mobileAdapter: MobileAdapter
     private lateinit var sortList: List<MobileModel>
+    private var mDatabaseAdapter: AppDatbase? = null
+    private var cmWorkerThread: CMWorkerThread = CMWorkerThread("favorite").also {
+        it.start()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         return inflater.inflate(R.layout.fragment_mobile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        rvMobile = view.findViewById(R.id.recyclerView)
+        mobileAdapter = MobileAdapter(this)
+        rvMobile.adapter = mobileAdapter
+        rvMobile.layoutManager = LinearLayoutManager(context)
+        rvMobile.itemAnimator = DefaultItemAnimator()
+        mDatabaseAdapter = AppDatbase.getInstance(view.context).also {
+            it.openHelper.readableDatabase
+        }
+
+        loadSongs()
     }
 
     private val songListCallback = object : Callback<List<MobileModel>> {
@@ -74,24 +91,14 @@ class MobileFragment() : Fragment(),
         setMobileAdapter(list)
     }
 
-    override fun onClickHeartClick(favImage: ImageView, mobile: MobileModel) {
-//        if (mobile.fav == 0) {
-//            favImage.setImageResource(R.drawable.ic_favorite)
-//            mobile.fav = 1
-//            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//            Log.d("fue", b.toString())
-//            b.add(mobile.id.toString())
-//            Log.d("fue-", b.toString())
-//            Prefs.putStringSet(PREFS_KEY_ID, b)
-//            var m = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//            Log.d("fue", m.toString())
-//        } else {
-//            favImage.setImageResource(R.drawable.ic_favorite_black_24dp)
-//            mobile.fav = 0
-//            var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//            b.remove(mobile.id.toString())
-//        }
+    override fun onHeartClick(favImage: ImageView, mobile: MobileModel) {
+        var task = Runnable {
+            mDatabaseAdapter?.mobileDao()!!.addMobile(MobileEntity(mobile.id,mobile.name, mobile.description, mobile.brand,
+                mobile.price, mobile.rating, mobile.thumbImageURL, mobile.fav))
+        }
+        cmWorkerThread.postTask(task)
         (context as? MainActivity)?.clickHeartfromMainActivity()
+        mobileAdapter.submitList(sortList)
     }
 
     override fun onMobileClick(mobile: MobileModel, _view: View) {
@@ -104,22 +111,6 @@ class MobileFragment() : Fragment(),
 
     private fun setMobileAdapter(list: List<MobileModel>) {
         mobileAdapter.submitList(list)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        rvMobile = view.findViewById(R.id.recyclerView)
-        mobileAdapter = MobileAdapter(this)
-        rvMobile.adapter = mobileAdapter
-        rvMobile.layoutManager = LinearLayoutManager(context)
-        rvMobile.itemAnimator = DefaultItemAnimator()
-
-        loadSongs()
-
-//        var b = Prefs.getStringSet(PREFS_KEY_ID, mutableSetOf<String>())
-//        Log.d("fue start", b.toString())
-
-
     }
 
     private fun loadSongs() {
