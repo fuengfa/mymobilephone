@@ -73,14 +73,14 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }else{
                 mobile.fav = 0
             }
-            Log.d("M-heart", mobile.toString())
-            listener.onHeartClick(mobileHaert, mobile) }
+            Log.d("plistfromMadap", mobile.toString())
+            listener.onHeartClick(mobile) }
     }
 }
 
 interface OnMobileClickListener {
     fun onMobileClick(mobile: MobileModel, view: View)
-    fun onHeartClick(favImage: ImageView, mobile : MobileModel)
+    fun onHeartClick(mobile : MobileModel)
 }
 
 

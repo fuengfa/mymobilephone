@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayout
 import com.scb.mobilephone.R
 import com.scb.mobilephone.ui.model.AppDatbase
 import com.scb.mobilephone.ui.model.CMWorkerThread
+import com.scb.mobilephone.ui.model.MobileModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), MainInterface {
@@ -77,9 +78,9 @@ class MainActivity: AppCompatActivity(), MainInterface {
         tabs.setupWithViewPager(viewPager)
     }
 
-    fun clickHeartfromMainActivity() {
-        sectionsPagerAdapter.listener2?.heart()
-        sectionsPagerAdapter.listener?.heart()
+    fun clickHeartfromMainActivity(mobileList: List<MobileModel>) {
+        sectionsPagerAdapter.listener2?.heart(mobileList)
+        sectionsPagerAdapter.listener?.heart(mobileList)
     }
 }
 
@@ -93,10 +94,10 @@ interface OnSortClickListener{
     fun sortlowtoheight()
     fun sorthighttolow()
     fun sortrating()
-    fun heart()
+    fun heart(mobileList: List<MobileModel>)
 }
 
 interface OnClickFavListener{
-    fun clickHeartfromMainActivity()
+    fun clickHeartfromMainActivity(mobileList: List<MobileModel>)
 }
 

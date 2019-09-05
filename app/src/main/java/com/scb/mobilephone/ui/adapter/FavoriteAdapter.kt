@@ -1,5 +1,6 @@
 package com.scb.mobilephone.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,7 +14,6 @@ import com.scb.mobilephone.ui.model.*
 class FavoriteAdapter(private val listener: OnMobileClickListener)
     :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener{
 
-    var tmp : ArrayList<MobileModel> = ArrayList()
     val mobiles: List<MobileModel>
         get() = _mobiles
     private var _mobiles: List<MobileModel> = listOf()
@@ -23,13 +23,8 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
     }
 
     override fun onItemDismiss(position: Int) {
-        for (list in _mobiles){
-            tmp.add(list)
-        }
-        tmp.removeAt(position)
-        notifyItemRemoved(position)
-//        ********
-        submitList(tmp)
+        _mobiles[position].fav = 0
+        listener.onHeartClick(_mobiles[position])
     }
 
 
@@ -45,6 +40,7 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
     }
 
     fun submitList(list: List<MobileModel>){
+        Log.d("pfromfavsubmit",list.toString())
         _mobiles = list
         notifyDataSetChanged()
     }
@@ -61,9 +57,6 @@ class FavViewHolder (parent: ViewGroup) : RecyclerView.ViewHolder(
     private var mobileName: TextView ?=null
     private var mobilePrice: TextView ?=null
     private var mobileRating: TextView ?=null
-    private var cmWorkerThread: CMWorkerThread = CMWorkerThread("favorite").also {
-        it.start()
-    }
 
     fun bind(mobile: MobileModel) {
 

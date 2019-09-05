@@ -3,11 +3,11 @@ package com.scb.mobilephone.ui.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,12 +26,12 @@ import retrofit2.Response
 class MobileFragment: Fragment(),
     OnMobileClickListener, OnSortClickListener {
 
-    companion object {
-        private const val EXTRA_SONG = "mobile"
-        fun startActivity(context: Context, mobile: MobileModel? = null) =
-            context.startActivity(Intent(context, MobileFragment::class.java))
-    }
-    private lateinit var myMobileList: MobileModel
+//    companion object {
+//        private const val EXTRA_SONG = "mobile"
+//        fun startActivity(context: Context, mobile: MobileModel? = null) =
+//            context.startActivity(Intent(context, MobileFragment::class.java))
+//    }
+
     private lateinit var rvMobile: RecyclerView
     private lateinit var mobileAdapter: MobileAdapter
     private lateinit var sortList: List<MobileModel>
@@ -80,7 +80,9 @@ class MobileFragment: Fragment(),
             setMobileAdapter(sortList)
         }
     }
-    override fun heart() {
+    override fun heart(mobileList: List<MobileModel>) {
+        Log.d("plist", "print from func heart in main")
+        sortList = mobileList
         setMobileAdapter(sortList)
     }
 
@@ -99,14 +101,23 @@ class MobileFragment: Fragment(),
         setMobileAdapter(list)
     }
 
-    override fun onHeartClick(favImage: ImageView, mobile: MobileModel) {
+    override fun onHeartClick(mobile: MobileModel) {
+        Log.d("plist", "print from func onHeartClick in main")
+
         var task = Runnable {
-            mDatabaseAdapter?.mobileDao()!!.addMobile(MobileEntity(mobile.id,mobile.name, mobile.description, mobile.brand,
-                mobile.price, mobile.rating, mobile.thumbImageURL, mobile.fav))
+            if(mobile.fav == 1){
+                mDatabaseAdapter?.mobileDao()!!.addMobile(MobileEntity(mobile.id,mobile.name, mobile.description, mobile.brand,
+                    mobile.price, mobile.rating, mobile.thumbImageURL, mobile.fav))
+            } else {
+                mDatabaseAdapter?.mobileDao()!!.deleteMobilebyID(mobile.id)
+            }
         }
         cmWorkerThread.postTask(task)
 
-        (context as? MainActivity)?.clickHeartfromMainActivity()
+
+        sortList.single { it.id == mobile.id }.fav = mobile.fav
+
+        (context as? MainActivity)?.clickHeartfromMainActivity(sortList)
         mobileAdapter.submitList(sortList)
 
     }
@@ -125,8 +136,6 @@ class MobileFragment: Fragment(),
 
     private fun loadSongs() {
         ApiManager.mobileService.mobile().enqueue(songListCallback)
-
-
     }
 
 }
