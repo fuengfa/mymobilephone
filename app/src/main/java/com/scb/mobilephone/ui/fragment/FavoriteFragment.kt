@@ -14,13 +14,9 @@ import com.scb.mobilephone.*
 import com.scb.mobilephone.ui.Activity.MainActivity
 import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
-import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
 import com.scb.mobilephone.ui.model.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FavoriteFragment: Fragment(),
     OnSortClickListener, OnMobileClickListener , OnClickFavListener{
@@ -58,35 +54,9 @@ class FavoriteFragment: Fragment(),
         return _view
     }
 
-    private val songListCallback = object : Callback<List<MobileModel>> {
-        override fun onFailure(call: Call<List<MobileModel>>, t: Throwable) {
-            context?.showToast("Can not call country list $t")
-        }
-
-        override fun onResponse(call: Call<List<MobileModel>>, response: Response<List<MobileModel>>) {
-            context?.showToast("Success")
-            Log.d("pfromResponse","clickHeart")
-            sortList = response.body()!!
-            var  m: ArrayList<MobileModel> = arrayListOf()
-            var favlist: MobileEntity?
-            for (list in sortList) {
-                var task = Runnable {
-                    favlist = mDatabaseAdapter?.mobileDao()?.queryMobile(list.id)
-                    if (favlist != null) {
-                        m.add(list)
-                    }
-                }
-                cmWorkerThread.postTask(task)
-            }
-            setMobileAdapter(m)
-//            setMobileAdapter(sortList)
-        }
-    }
-
     private fun setMobileAdapter(list: List<MobileModel>){
-        Log.d("plist-fromsetAdap", list.toString())
-        //sortList = list
-        moAdapter.submitList(list.filter { it.fav == 1 })
+        sortList = list
+        moAdapter.submitList(sortList.filter { it.fav == 1 })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,7 +73,25 @@ class FavoriteFragment: Fragment(),
         mDatabaseAdapter = AppDatbase.getInstance(view.context).also {
             it.openHelper.readableDatabase
         }
-        loadSongs()
+        loadFavoritelist()
+    }
+
+    private fun loadFavoritelist()  {
+        var favList: List<MobileEntity>? = null
+        val task = Runnable {
+            favList = mDatabaseAdapter?.mobileDao()?.queryMobiles()
+            setMobileAdapter(mobileModelMapper(favList ?: listOf()))
+        }
+        cmWorkerThread.postTask(task)
+    }
+
+    private fun mobileModelMapper(entity: List<MobileEntity>): ArrayList<MobileModel> {
+        val  mobileModelList = arrayListOf<MobileModel>()
+
+        entity.forEach{
+            mobileModelList.add(it.transformToMobileModel())
+        }
+        return mobileModelList
     }
 
     override fun sortlowtoheight() {
@@ -126,10 +114,6 @@ class FavoriteFragment: Fragment(),
         sortList = mobileList
     }
 
-    private fun loadSongs()  {
-        ApiManager.mobileService.mobile().enqueue(songListCallback)
-
-    }
 
     override fun onMobileClick(mobile: MobileModel, view: View) {
 

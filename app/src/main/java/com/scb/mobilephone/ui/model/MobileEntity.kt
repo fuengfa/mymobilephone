@@ -14,4 +14,12 @@ data class MobileEntity(
     var rating: Double,
     var thumbImageURL: String,
     var fav: Int
-)
+) {
+    fun transformToMobileModel(): MobileModel {
+        return MobileModel(
+            this.brand, this.description, this.id,
+            this.name, this.price, this.rating,
+            this.thumbImageURL, this.fav
+        )
+    }
+}
