@@ -44,30 +44,47 @@ class MobileViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             R.layout.mobilephone,
             parent, false)
 ) {
-    private val mobilePic: ImageView = itemView.findViewById(R.id.mobilePicture)
-    private val mobileName: TextView = itemView.findViewById(R.id.mobileModel)
-    private val mobileDescription: TextView = itemView.findViewById(R.id.mobileDescription)
-    private val mobilePrice: TextView = itemView.findViewById(R.id.mobilePrice)
-    private val mobileRating: TextView = itemView.findViewById(R.id.mobileRating)
-    private val mobileHaert: ImageView = itemView.findViewById(R.id.mobileHeart)
+    private var mobileDescription: TextView? = null
+    private var mobileRating: TextView? = null
+    private var mobileHaert: ImageView? = null
+    private var mobilePrice: TextView? = null
+    private var mobilePic: ImageView? = null
+    private var mobileName: TextView? = null
+
 
     fun bind(mobile: MobileModel, listener: OnMobileClickListener) {
-        Glide
-            .with(itemView.context)
-            .load(mobile.thumbImageURL)
-            .centerCrop()
-            .into(mobilePic)
-        mobileName.text = mobile.name
-        mobileDescription.text = mobile.description
-        mobilePrice.text = "Price: ${mobile.price}"
-        mobileRating.text = "Rating: ${mobile.rating}"
-        if(mobile.fav == 0 ){
-            mobileHaert.setImageResource(R.drawable.ic_favorite)
-        }else{
-            mobileHaert.setImageResource(R.drawable.ic_favorite_black_24dp)
+
+        mobileDescription = itemView.findViewById(R.id.mobileDescription) as TextView
+        mobilePic = itemView.findViewById(R.id.mobilePicture) as ImageView
+        mobileName = itemView.findViewById(R.id.mobileModel) as TextView
+        mobilePrice = itemView.findViewById(R.id.mobilePrice) as TextView
+        mobileRating = itemView.findViewById(R.id.mobileRating) as TextView
+        mobileHaert = itemView.findViewById(R.id.mobileHeart) as ImageView
+
+        mobilePic?.let {
+            Glide
+                .with(itemView.context)
+                .load(mobile.thumbImageURL)
+                .centerCrop()
+                .into(it)
         }
-        itemView.setOnClickListener { listener.onMobileClick(mobile,itemView) }
-        mobileHaert.setOnClickListener {
+
+        mobileName?.text = mobile.name
+        mobileDescription?.text = mobile.description
+        mobilePrice?.text = "Price: ${mobile.price}"
+        mobileRating?.text = "Rating: ${mobile.rating}"
+
+        if(mobile.fav == 0 ){
+            mobileHaert?.setImageResource(R.drawable.ic_favorite)
+        }else{
+            mobileHaert?.setImageResource(R.drawable.ic_favorite_black_24dp)
+        }
+
+        itemView.setOnClickListener {
+            listener.onMobileClick(mobile,itemView)
+        }
+
+        mobileHaert?.setOnClickListener {
             if(mobile.fav == 0){
                 mobile.fav = 1
             }else{

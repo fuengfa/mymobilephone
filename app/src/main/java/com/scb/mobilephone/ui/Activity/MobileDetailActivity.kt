@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.ViewPager
 import com.ouattararomuald.slider.ImageSlider
 import com.ouattararomuald.slider.SliderAdapter
 import com.ouattararomuald.slider.loaders.picasso.PicassoImageLoaderFactory
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.model.Pictures
 import com.scb.mobilephone.R
+import com.scb.mobilephone.ui.adapter.PhotoPagerAdapter
 import com.scb.mobilephone.ui.model.MobileModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,7 +32,7 @@ class MobileDetailActivity : AppCompatActivity() {
     private lateinit var detailDes: TextView
     private lateinit var detailprice: TextView
     private lateinit var detailRating: TextView
-    private lateinit var imageSlider: ImageSlider
+    private lateinit var imageSlider: ViewPager
     private var pictures: ArrayList<Pictures> = ArrayList<Pictures>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +41,7 @@ class MobileDetailActivity : AppCompatActivity() {
         //actionbar
         val actionbar = supportActionBar
         //set back button
+        imageSlider = findViewById(R.id.viewpager)
         actionbar!!.setDisplayHomeAsUpEnabled(true)
         detailName = findViewById(R.id.detailName)
         detailRating = findViewById(R.id.detailRating)
@@ -61,22 +64,15 @@ class MobileDetailActivity : AppCompatActivity() {
             pictures.clear()
             pictures.addAll(response.body()!!)
             Log.d("fuengfa","size : ${pictures.size}")
+//            Log.d("fuengfa","size : ${newimageUrls.size}")
+//            imageSlider.adapter = SliderAdapter(
+//                this@MobileDetailActivity,
+//                PicassoImageLoaderFactory(),
+//                imageUrls = newimageUrls
+//            )
+//            Log.d("Print url", newimageUrls.toString())
 
-            val newimageUrls: ArrayList<String> = ArrayList<String>()
-            for (image in pictures){
-                if(image.url.contains("http",true)){
-                    newimageUrls.add(image.url)
-                }else{
-                    newimageUrls.add("https://${image.url}")
-                }
-            }
-            Log.d("fuengfa","size : ${newimageUrls.size}")
-            imageSlider.adapter = SliderAdapter(
-                this@MobileDetailActivity,
-                PicassoImageLoaderFactory(),
-                imageUrls = newimageUrls
-            )
-            Log.d("Print url", newimageUrls.toString())
+            imageSlider.adapter = PhotoPagerAdapter(supportFragmentManager, pictures)
         }
     }
 
@@ -91,7 +87,6 @@ class MobileDetailActivity : AppCompatActivity() {
         detailDes.text = mobile.description
         detailprice.text = "Price: ${mobile.price}"
         detailRating.text = "Rating: ${mobile.rating}"
-        imageSlider = findViewById(R.id.image_slider)
         loadPictures(mobile)
 
     }

@@ -27,7 +27,6 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
         listener.onHeartClick(_mobiles[position])
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         FavViewHolder(parent)
 
