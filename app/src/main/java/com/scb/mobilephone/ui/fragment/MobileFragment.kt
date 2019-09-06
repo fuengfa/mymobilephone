@@ -1,6 +1,5 @@
 package com.scb.mobilephone.ui.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,12 +24,6 @@ import retrofit2.Response
 
 class MobileFragment: Fragment(),
     OnMobileClickListener, OnSortClickListener {
-
-//    companion object {
-//        private const val EXTRA_SONG = "mobile"
-//        fun startActivity(context: Context, mobile: MobileModel? = null) =
-//            context.startActivity(Intent(context, MobileFragment::class.java))
-//    }
 
     private lateinit var rvMobile: RecyclerView
     private lateinit var mobileAdapter: MobileAdapter
@@ -115,7 +108,7 @@ class MobileFragment: Fragment(),
         cmWorkerThread.postTask(task)
 
 
-        sortList.single { it.id == mobile.id }.fav = mobile.fav
+//        sortList.single { it.id == mobile.id }.fav = mobile.fav
 
         (context as? MainActivity)?.clickHeartfromMainActivity(sortList)
         mobileAdapter.submitList(sortList)
@@ -131,6 +124,7 @@ class MobileFragment: Fragment(),
 
 
     private fun setMobileAdapter(list: List<MobileModel>) {
+        sortList = list
         mobileAdapter.submitList(list)
     }
 

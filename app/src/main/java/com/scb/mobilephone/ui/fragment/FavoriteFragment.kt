@@ -16,6 +16,7 @@ import com.scb.mobilephone.ui.Activity.OnClickFavListener
 import com.scb.mobilephone.ui.Activity.OnSortClickListener
 import com.scb.mobilephone.ui.adapter.FavoriteAdapter
 import com.scb.mobilephone.ui.adapter.OnMobileClickListener
+import com.scb.mobilephone.ui.callback.CustomItemTouchHelperCallback
 import com.scb.mobilephone.ui.model.*
 
 class FavoriteFragment: Fragment(),

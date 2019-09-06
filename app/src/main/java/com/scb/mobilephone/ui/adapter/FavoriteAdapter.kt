@@ -1,18 +1,17 @@
 package com.scb.mobilephone.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.scb.mobilephone.CustomItemTouchHelperListener
+import com.scb.mobilephone.ui.callback.CustomItemTouchHelperListener
 import com.scb.mobilephone.R
 import com.scb.mobilephone.ui.model.*
 
 class FavoriteAdapter(private val listener: OnMobileClickListener)
-    :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener{
+    :RecyclerView.Adapter<FavViewHolder>(), CustomItemTouchHelperListener {
 
     val mobiles: List<MobileModel>
         get() = _mobiles
@@ -27,6 +26,7 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
         listener.onHeartClick(_mobiles[position])
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         FavViewHolder(parent)
 
@@ -39,7 +39,6 @@ class FavoriteAdapter(private val listener: OnMobileClickListener)
     }
 
     fun submitList(list: List<MobileModel>){
-        Log.d("pfromfavsubmit",list.toString())
         _mobiles = list
         notifyDataSetChanged()
     }

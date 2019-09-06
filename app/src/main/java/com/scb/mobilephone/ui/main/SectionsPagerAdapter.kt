@@ -33,8 +33,6 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : 
                 listener2 = mfragment
                 return mfragment
             }
-
-
         }
     }
 

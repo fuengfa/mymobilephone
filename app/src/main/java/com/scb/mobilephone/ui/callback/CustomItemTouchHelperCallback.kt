@@ -1,4 +1,4 @@
-package com.scb.mobilephone
+package com.scb.mobilephone.ui.callback
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

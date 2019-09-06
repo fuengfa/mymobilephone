@@ -8,9 +8,6 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
-import com.ouattararomuald.slider.ImageSlider
-import com.ouattararomuald.slider.SliderAdapter
-import com.ouattararomuald.slider.loaders.picasso.PicassoImageLoaderFactory
 import com.scb.mobilephone.ui.Service.ApiManager
 import com.scb.mobilephone.ui.model.Pictures
 import com.scb.mobilephone.R

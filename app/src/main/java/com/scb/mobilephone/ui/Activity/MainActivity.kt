@@ -25,17 +25,16 @@ class MainActivity: AppCompatActivity(), MainInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.init()
+
         initialValue()
         createSectionPageAgapter()
-        alertDialog1 = presenter.creatDialog(this)
-        sortIt.setOnClickListener { alertDialog1.show() }
-
+        sortIt.setOnClickListener {
+            alertDialog1.show()
+        }
         setupDatabase()
         setupWorkerThread()
-
-
     }
+
     private fun setupWorkerThread() {
         mCMWorkerThread = CMWorkerThread("scb_database").also {
             it.start()
@@ -67,6 +66,7 @@ class MainActivity: AppCompatActivity(), MainInterface {
     }
 
     fun initialValue(){
+        alertDialog1 = presenter.creatDialog(this)
         viewPager = findViewById(R.id.view_pager)
         tabs = findViewById(R.id.tabs)
     }
